@@ -10,49 +10,7 @@ var output_data;
 
 var goal_reached = false;
 
-var storename;
-var changed = false;
-var statusElem = '#savestatus';
-
 Blockly.JavaScript.addReservedWords('highlightBlock');
-
-function change()
-{
-	changed = true;
-	$(statusElem).text('Saving...');
-	if (isFinite(workspace.remainingCapacity()))
-	{
-		$('#capacity').html('You have <span class="capacity">'+workspace.remainingCapacity()+'</span> blocks left.');
-	}
-}
-
-function store()
-{
-	if (changed)
-	{
-		try
-		{
-			var xml = Blockly.Xml.workspaceToDom(workspace);
-			var xml_text = Blockly.Xml.domToText(xml);
-			
-			$.post("code/save", { 'name' : storename, 'code' : xml_text },
-				function(){
-					changed = false;
-					$(statusElem).text('Saved');
-					setTimeout(store, saveInterval);
-			});
-		}
-		catch(err)
-		{
-			$(statusElem).text('Error saving...!');
-			setTimeout(store, saveInterval);
-		}
-	}
-	else
-	{
-		setTimeout(store, saveInterval);
-	}
-}
 
 function getSpeed()
 {
@@ -61,8 +19,6 @@ function getSpeed()
 
 function init()
 {
-	storename = document.getElementById('storename').value;
-	
 	var maxblocks = Number.parseInt(document.getElementById('maxblocks').value);
 	
 	workspace = Blockly.inject('blocks', {toolbox: document.getElementById('toolbox'),
